@@ -1,5 +1,5 @@
 resource "aws_security_group" "controle_pedidos_rds_sg" {
-  vpc_id = var.vpcId
+  vpc_id = data.aws_vpc.vpc.id
 
   ingress {
     from_port   = 5432
@@ -23,14 +23,14 @@ resource "aws_security_group" "controle_pedidos_rds_sg" {
 resource "aws_db_instance" "controle_pedido_db" {
   identifier             = "controle-pedidos-db"
   engine                 = "postgres"
-  engine_version         = "14.5"
+  engine_version         = "11.22"
   instance_class         = var.instanceType
   allocated_storage      = 20
   db_subnet_group_name   = aws_db_subnet_group.controle_pedido_db_subnet_group.name
   vpc_security_group_ids = [aws_security_group.controle_pedidos_rds_sg.id]
   username               = var.dbUsername
   password               = var.dbPassWord
-  dbName                 = var.dbName
+  db_name                = var.dbName
   skip_final_snapshot    = true
 
   tags = {
