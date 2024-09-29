@@ -1,5 +1,5 @@
 resource "aws_security_group" "controle_pedidos_rds_sg" {
-  vpc_id = var.vpc_id
+  vpc_id = var.vpcId
 
   ingress {
     from_port   = 5432
@@ -40,7 +40,7 @@ resource "aws_db_instance" "controle_pedido_db" {
 
 resource "aws_db_subnet_group" "controle_pedido_db_subnet_group" {
   name       = "controle-pedidos-database-sg"
-  subnet_ids = var.subnets
+  subnet_ids = [for subnet in data.aws_subnet.subnet : subnet.id if subnet.availability_zone != "${var.region}e"]
 
   tags = {
     Name = "controle_pedido_db_subnet_group"
