@@ -3,10 +3,10 @@ name: Create Infra AWS
 on:
   push:
     branches:
-    - main
+    - feature**
 
-# env:
-#   REGION_DEFAULT: us-east-1
+env:
+  REGION_DEFAULT: us-east-1
 
 jobs:
   create_infra:
@@ -15,15 +15,15 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v2
 
-    # - name: Configure AWS credentials
-    #   uses: aws-actions/configure-aws-credentials@v1
-    #   with:
-    #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-    #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ID }}
-    #     aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-    #     aws-region: ${{ env.REGION_DEFAULT }}
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ID }}
+        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+        aws-region: ${{ env.REGION_DEFAULT }}
 
     - name: Terraform Setup
       uses: hashicorp/setup-terraform@v3
@@ -47,7 +47,3 @@ jobs:
       id: plan
       run: terraform plan -out=tfplan -no-color -input=false
       continue-on-error: true
-
-    - name: Terraform Apply
-      id: apply
-      run: terraform apply -input=false -auto-approve
